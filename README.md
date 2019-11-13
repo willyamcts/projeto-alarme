@@ -15,14 +15,13 @@ Posteriormente, talvez seja desenvolvido um app para Android para habilitar/desa
 
 Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
 
- * [ ] Arduino Uno 
- * [ ] Button 
- * [ ] Buzzer 
- * [ ] RFID
- * [ ] PIR - Presence Infra Red module
- <s> * [ ] Switch Magnetic module </s>
- <s> * [ ] GSM SIM800L + Regulador de tensão </s>
- <s> * [ ] Relay 12v </s>
+ * Arduino Uno 
+ * Buzzer 
+ * RFID
+ * Switch Magnetic module
+ * PIR - Presence Infra Red module
+ * <s>GSM SIM800L + Regulador de tensão </s>
+ * <s>Relay 12v </s>
  
  **Extra:**
- <s> * [ ]  Ethernet
+ * <s> Ethernet </s>
