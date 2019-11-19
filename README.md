@@ -25,3 +25,7 @@ Os seguinte módulos e componentes são necessários para a montagem completa do
  
  **Extra:**
  * <s> Ethernet </s>
+
+
+### Estado atual:
+Funcionando normalmente utilizando RFID como meio de controle. GSM e ethernet disposto no esquema de ligação não estão sendo utilizados no momento.
