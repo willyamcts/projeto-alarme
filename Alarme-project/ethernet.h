@@ -34,7 +34,7 @@ char serverAPI[] = "api.pushingbox.com";
 
 
 
-bool initServer(bool alarmOn) {
+int initServer(bool alarmOn) {
 
   bool onTemp = alarmOn;
   
@@ -112,13 +112,13 @@ bool initServer(bool alarmOn) {
 
 
 
-void postForm(String sensor) {
+void postForm(String sensor, String info) {
   
   // Post to Google Form.............................................
   if (client.connect(serverAPI, 80)) {
 
     Serial.println("connected");
-    sprintf(postmsg,"GET /pushingbox?devid=%s&status=%s HTTP/1.1", devid.c_str(), sensor.c_str());  // NOTE** In this line of code you can see where the temperature value is 
+    sprintf(postmsg,"GET /pushingbox?devid=%s&status=%s%s HTTP/1.1", devid.c_str(), sensor.c_str(), info.c_str());  // NOTE** In this line of code you can see where the temperature value is 
       // inserted into the wed address. It follows 'status=' Change that value to whatever you want to post.
 
     

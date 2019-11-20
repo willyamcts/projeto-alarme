@@ -1,7 +1,6 @@
 
 # include "pins.h"
 
-//int BUZZER = 7;
 
 void danied() {
   tone(BUZZER, 150, 300);
