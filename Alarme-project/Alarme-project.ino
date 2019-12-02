@@ -40,7 +40,6 @@ void setup() {
    */
   pinMode(BUZZER, OUTPUT);
   pinMode(PIR_1, INPUT);
-  pinMode(PIR_2, INPUT);
   pinMode(SWITCH_MAGNETIC_1, INPUT_PULLUP);
   pinMode(LED_BOARD, OUTPUT);
 
@@ -64,7 +63,8 @@ void setup() {
 
 // TODO: Iniciando alterando o valor de alarmOn devido ao retorno da função initServer
 //  postForm("InIcIaNdO_-_", String(alarmOn) );
-  
+
+  initServer(0);
 }
 
 
@@ -75,20 +75,17 @@ void setup() {
 // deixar somente chamada de métodos de acionamento;
 void loop() {
 
+  alarmOn = initServer(alarmOn);
 
-  Serial.println(alarmOn);
+  // TODO: Value alarOn
+  Serial.print("ALARME ON = "); Serial.println(alarmOn);
 
-  // Start server web
-  Serial.println("SERVER: ");
-  Serial.println(initServer(alarmOn));
-  
  // TODO: SERIAL PRINT Only
   if ( alarmOn == false) {
-    Serial.print("Alarme desativado!! alarmOn = ");
-    Serial.println(alarmOn);
+    Serial.print("Alarme desativado!! alarmOn = "); Serial.println(alarmOn);
   }
 
-  // Veriifca os retornos dos módulos se o alarme estiver ativo;
+  // Veriifca os retornos dos módulos se o alarme estiver ativo (= 1);
   if ( alarmOn == true ) {
     checkStatusModules();
   }
@@ -118,12 +115,23 @@ void enableDesableAlarm(bool state) {
 
 
 void checkStatusModules() {
+
+    String sensor = "";
+    String local = "";
     
     //if ( checkMagnetic() || activePIR() ) {
-    if ( activePIR() ) {
-        action = true;        
+    if ( checkMagnetic() ) {
+        action = true;
+        sensor = "Magnetico";
+        local = "Porta_traseira";        
         
+    } else if ( activePIR() ) {
+      action = true;
+      sensor = "PIR";
+      local = "Ferramentas";
+       
     } else {
+      
       action = false;
     }
 
@@ -143,15 +151,12 @@ void checkStatusModules() {
 
         
 // TODO: Serial print
-Serial.print("DISPAROU action=true - PIR= ");
-//Serial.print(digitalRead(PIR_1));
-Serial.print(activePIR());
-Serial.print(" - MAGNETICO= ");
-//Serial.print(digitalRead(SWITCH_MAGNETIC_1));
-Serial.println(checkMagnetic());
+Serial.print("DISPAROU action=true");
+Serial.print(" - Sensor: "); Serial.print(sensor);
+Serial.print(" - Info: "); Serial.print(local);
 
         // post data in google sheet
-      //  postForm("PIR_Sensor", "");
+        postForm(sensor, local);
 
         
     }

@@ -36,7 +36,7 @@ char serverAPI[] = "api.pushingbox.com";
 
 int initServer(bool alarmOn) {
 
-  bool onTemp = alarmOn;
+  int onTemp = alarmOn;
   
   EthernetClient clientWeb = server.available();
 
@@ -73,6 +73,7 @@ int initServer(bool alarmOn) {
           clientWeb.println("<a href=\"/?off\">Desligar</a><br />");
           clientWeb.println("<br />"); clientWeb.println("<br />");
 
+          delay(1);
           if ( alarmOn ) {
             clientWeb.println("<b> ON </b>");
           } else {
@@ -86,10 +87,10 @@ int initServer(bool alarmOn) {
           clientWeb.stop();
            
           if(readString.indexOf("?on") > 0) {
-            onTemp = true; Serial.println(); Serial.println("* Alarme ativado via web...");
+            onTemp = 1; Serial.println(); Serial.println("* Alarme ativado via web...");
           } else {
             if(readString.indexOf("?off") > 0) {
-              onTemp = false; Serial.println(); Serial.println("* Alarme desativado via web");
+              onTemp = 0; Serial.println(); Serial.println("* Alarme desativado via web");
             } 
           }
           
@@ -98,15 +99,18 @@ int initServer(bool alarmOn) {
       }
 
       // stop while if change value in alarmOn
-      if ( alarmOn != onTemp ) {
+      if ( onTemp != alarmOn ) {
+        
         // TODO
-        Serial.println("Para a verificação de cliente");
-        return onTemp;
+        Serial.print("Para a verificação de cliente: ");
+
+        
         break;;
       }
-      
     }
   }
+
+  return onTemp;
 }
 
 
@@ -118,7 +122,7 @@ void postForm(String sensor, String info) {
   if (client.connect(serverAPI, 80)) {
 
     Serial.println("connected");
-    sprintf(postmsg,"GET /pushingbox?devid=%s&status=%s%s HTTP/1.1", devid.c_str(), sensor.c_str(), info.c_str());  // NOTE** In this line of code you can see where the temperature value is 
+    sprintf(postmsg,"GET /pushingbox?devid=%s&status=%s-%s HTTP/1.1", devid.c_str(), sensor.c_str(), info.c_str());  // NOTE** In this line of code you can see where the temperature value is 
       // inserted into the wed address. It follows 'status=' Change that value to whatever you want to post.
 
     
