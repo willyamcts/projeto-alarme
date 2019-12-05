@@ -8,17 +8,19 @@
  * 
  * Components: 
  *  - Arduino Uno
- *  - Presence Infra Red module
  *  - Ethernet
+ *  - Presence Infra Red module
+ *	- Magnético
  *    
  */
 
-# include "buzzer.h"
 # include "pins.h"
-# include "pir-sensor.h"
-//# include "rfid.h"
-# include "magnetic-sensor.h"
 # include "ethernet.h"
+# include "pir-sensor.h"
+# include "magnetic-sensor.h"
+# include "relay.h"
+# include "buzzer.h"
+//# include "rfid.h"
 
 
 
@@ -32,6 +34,13 @@ bool alarmOn = false;
 // Armazena o estado dos sensores;
 bool action = false;
 
+// Armazena hora do disparo (millis);
+unsigned long currentMillis = NULL; // 0
+
+// "tempo de acionamento" do relé, em ms;
+//	- 120000 = 2 minutos
+//	- 300000 = 5 minutos
+const long triggerTime = 120000;
 
 // --------------------- Setup ---------------------
 void setup() {
@@ -140,14 +149,41 @@ void checkStatusModules() {
 
 
 
+	if ( currentMillis != NULL && (millis() - currentMillis >= triggerTime) ) {
+		
+		triggerRelay(0); // false (alterar funcao se necessario usar true/false)
+		
+		// Retorna ao valor incial para uso posterior, atendendo a linha 167;
+		currentMillis == NULL;
+	}
+	
+	
+
+
     // Shoot from action = true;
     if ( action == true ) {
+	
+
+		if ( currentMillis == NULL ) {
+			currentMillis = millis();
+		}
+		
+		shoot();
+		
+        
+    }
+	
+	
+	
+	
+	void shoot() {
+		
         // liga LED da placa
         digitalWrite(LED_BOARD, LOW);
         digitalWrite(LED_BOARD, HIGH);
-        // Dispara dispositivo sonoro;
-        
-        shoot();
+		
+        // Dispara dispositivo sonoro de teste (buzzer);        
+        shootBuzzer();
 
         
 // TODO: Serial print
@@ -158,8 +194,7 @@ Serial.print(" - Info: "); Serial.print(local);
         // post data in google sheet
         postForm(sensor, local);
 
-        
-    }
+	}
       
 }
 

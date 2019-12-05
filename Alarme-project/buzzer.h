@@ -20,7 +20,7 @@ void accept() {
 }
 
 // Shoot buzzer alarm;
-void shoot(){  
+void shootBuzzer(){
   tone(BUZZER, 500, 175);
   delay(250);
   tone(BUZZER, 500, 175);
