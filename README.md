@@ -20,10 +20,9 @@ Os seguinte módulos e componentes são necessários para a montagem completa do
  * Buzzer 
  * Switch Magnetic module
  * PIR - Presence Infra Red module
- * <s>GSM SIM800L + Regulador de tensão </s>
+ * <s> GSM SIM800L + Regulador de tensão
+ * RFID </s>
  * Relay
- * <s>RFID<\s>
- 
 
 
 ## Estado atual:
