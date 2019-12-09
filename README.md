@@ -16,16 +16,17 @@ Posteriormente, talvez seja desenvolvido um app para Android para habilitar/desa
 Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
 
  * Arduino Uno 
+ * Ethernet
  * Buzzer 
- * RFID
  * Switch Magnetic module
  * PIR - Presence Infra Red module
  * <s>GSM SIM800L + Regulador de tensão </s>
- * <s>Relay 12v </s>
+ * Relay
+ * <s>RFID<\s>
  
- **Extra:**
- * <s> Ethernet </s>
 
 
 ## Estado atual:
-Funcionando normalmente utilizando Ethernet como meio de controle. Utiliza página web como meio de ativação e consome api pushingbox.com para fazer o registro de detecção de movimento para uma planilha do Google. Os módulos GSM, ethernet e RFID disposto no esquema "coming" para implementação futura se necessário.
+Funcionando normalmente utilizando Ethernet como meio de controle. Utiliza página web como meio de ativação e consome api pushingbox.com para fazer o registro de detecção de movimento para uma planilha do Google. Ao acionar algum dos sensores, o relé aciona por 15 segundos e o acionamento é registrado na planilha.
+
+Os módulos dispostos no esquema "coming" são para implementação futura, se necessário.
