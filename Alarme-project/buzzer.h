@@ -9,7 +9,7 @@ void danied() {
   delay(500);
 }
 
-void accept() {
+void accepted() {
   delay(450);
   for (int i=0; i<2; i++) {
   tone(BUZZER, 475, 75);
