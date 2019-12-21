@@ -17,7 +17,7 @@ Os seguinte módulos e componentes são necessários para a montagem completa do
 
  * Arduino Uno 
  * Ethernet
- * Buzzer 
+ * <s>Buzzer</s>
  * Switch Magnetic module
  * PIR - Presence Infra Red module
  * <s> GSM SIM800L + Regulador de tensão
@@ -26,6 +26,6 @@ Os seguinte módulos e componentes são necessários para a montagem completa do
 
 
 ## Estado atual:
-Funcionando normalmente utilizando Ethernet como meio de controle. Utiliza página web como meio de ativação e consome api pushingbox.com para fazer o registro de detecção de movimento para uma planilha do Google. Ao acionar algum dos sensores, o relé aciona por 15 segundos e o acionamento é registrado na planilha.
+[...]
 
 Os módulos dispostos no esquema "coming" são para implementação futura, se necessário.
