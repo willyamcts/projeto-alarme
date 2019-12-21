@@ -15,14 +15,13 @@ Posteriormente, talvez seja desenvolvido um app para Android para habilitar/desa
 
 Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
 
- * Arduino Uno 
- * Ethernet
+ * NodeCU ESP8266
  * <s>Buzzer</s>
- * Switch Magnetic module
- * PIR - Presence Infra Red module
+ * Módulo magnético
+ * PIR - Sensor de presença Infrevermelho
+ * Relê
  * <s> GSM SIM800L + Regulador de tensão
  * RFID </s>
- * Relay
 
 
 ## Estado atual:
