@@ -9,7 +9,7 @@ void danied() {
   delay(500);
 }
 
-void accept() {
+void accepted() {
   delay(450);
   for (int i=0; i<2; i++) {
   tone(BUZZER, 475, 75);
@@ -20,7 +20,7 @@ void accept() {
 }
 
 // Shoot buzzer alarm;
-void shootBuzzer(){
+void shoot(){  
   tone(BUZZER, 500, 175);
   delay(250);
   tone(BUZZER, 500, 175);
