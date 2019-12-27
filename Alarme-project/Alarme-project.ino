@@ -156,8 +156,6 @@ void setup() {
 
 unsigned long checkDBMillis = millis();
 
-bool temp;
-
 
 void loop() {
   //digitalWrite(LED_BOARD, HIGH);
