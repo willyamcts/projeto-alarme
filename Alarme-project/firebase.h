@@ -17,6 +17,8 @@ const String path = "/state/laT1udjSw8VORuaYuW15/";
 const String fieldState = "on";
 const String fieldLastTime = "lastChange";
 const String fieldLastLocale = "lastLocale";
+const String fieldUptime = "/uptime";
+const String fieldUptimeOn = "/uptimeOn";
 
 
 /*
@@ -25,6 +27,9 @@ const String fieldLastLocale = "lastLocale";
 bool postTime(String path, String field);
 
 bool postLocale(String path, String field, String locale);
+
+void postUptime();
+void postUptimeOn();
 
 /*
  * 
@@ -75,6 +80,7 @@ bool postTime(String path, String fieldTimestamp) {
   }
 }
 
+
 bool postLocale(String path, String fieldLocale, String locale) {
 
   if (Firebase.setString(firebaseData, path + fieldLocale, locale) ) {
@@ -83,6 +89,20 @@ bool postLocale(String path, String fieldLocale, String locale) {
 }
 
 
+// @require campo "Uptime" e tempo;
+void postUptime() {
+
+    if ( Firebase.setFloat(firebaseData, fieldUptime, millis()) ) {
+      //return true;
+    }
+}
 
 
+
+void postUptimeOn(unsigned long timeOn) {
+
+  if ( Firebase.setFloat(firebaseData, fieldUptimeOn, timeOn) ) {
+    //return true;
+  }  
+}
 
