@@ -7,7 +7,7 @@
  * 
  * 
  * Components: 
- *  - Nodecu ESP8266 12
+ *  - NodeMCU ESP8266 12
  *  - LED RGB
  *  - Presence Infra Red module
  *	- Magnético
@@ -20,7 +20,7 @@
 # include "pir-sensor.h"
 # include "magnetic-sensor.h"
 # include "relay.h"
-# include "buzzer.h"
+//# include "buzzer.h"
 # include "led.h"
 //# include "rfid.h"
 
@@ -34,10 +34,11 @@
 #define FIREBASE_AUTH "16vw..."
 
 
+/*
 // Set data connection wireless;
 #define WIFI_SSID "VIVO-29A9"
 #define WIFI_PASSWORD "C9D3BD29A9"
-
+*/
 
 /*
 ***REMOVED***
@@ -49,6 +50,11 @@
 #define WIFI_PASSWORD "R041215W"
 */
 
+
+#define WIFI_SSID "Rede"
+#define WIFI_PASSWORD "afgm6033"
+
+
 // Armazena estado do alarme (on/off);
 bool alarmOn;
 
@@ -57,18 +63,24 @@ bool action = false;
 
 bool alarmOnTemp;
 
-// Armazena hora do disparo (millis);
-unsigned long currentMillis = 0; // 0
 
 // Intervalor de tempo para consultar o estado do alarme
 const int timeCheck = 1000 * 15; // = 15 segundos
 
+
+// Armazena hora do disparo (millis);
+unsigned long currentMillisTrigger = 0; // 0
 // "tempo de acionamento" do relé, em ms;
-//	Conf: Altera somente o último número, mantém o [60000]
+//	Conf: Altera somente o último número, mantém o [60.000]
 //      Em minutos
 const long triggerTime = 15000; //60000 * 2;
 
 
+// intervalo de tempo para atualizar o tempo que o alarme está habilitado;
+//  Conf: Altera somente o último número, mantém o [60.000]
+unsigned long uptimeOn = 60000 * 1;
+// Armazena o tempo em que está habilitado;
+unsigned long currentMillisOn = 0;
 
 
 
@@ -146,26 +158,31 @@ bool temp;
 void loop() {
   //digitalWrite(LED_BOARD, HIGH);
 
+
+  // Check db in interval defined;
   if ( millis() > (checkDBMillis + timeCheck) ) {
     checkDBMillis = millis();
 
     alarmOnTemp = checkDBAlarm("", "");
 
-    //if ( alarmOnTemp == 0 || alarmOnTemp == 1 ) {
+    postUptime();
       
-      if ( alarmOnTemp != alarmOn ) {
-        alarmOn = alarmOnTemp;
+    if ( alarmOnTemp != alarmOn ) {
+      alarmOn = alarmOnTemp;
   
-        // desable relay case alarm change to off
-        if (digitalRead(RELAY)) {
-          triggerRelay(false);
-        }
-  
+      // desable relay case alarm change to off
+      if (digitalRead(RELAY)) {
+        triggerRelay(false);
+        
       }
-      
-    //} else {
-//      low();
-    //}
+
+/*
+          // set time On 
+          currentMillisOn = 0;
+          postUptimeOn(currentMillisOn);
+*/
+
+    }
 
     //TODO: funcao correta comentada;
     //ledConsultingDB(alarmOn);
@@ -204,7 +221,6 @@ void loop() {
     checkStatusModules();
   }
 
-
   digitalWrite(LED_BOARD, !HIGH);
 }
 
@@ -212,6 +228,8 @@ void loop() {
 
 
 
+/*
+    // Alterações ao mudar estado do alarme on/off
 void enableDesableAlarm(bool state) {
   
   if ( state ) {
@@ -229,48 +247,48 @@ void enableDesableAlarm(bool state) {
   }
   
 }
+*/
 
 
 
     // Pegar módulo a módulo em um array, varrer e disparar caso alguma posicao
     //  seja true;
 void checkStatusModules() {
-
-    String sensor = "";
-    String local = "";
-
-    // Serial.println(checkMagnetic());
-
-    if ( checkMagnetic() ) {
-        action = true;
-        sensor = "Magnetico";
-        local = "Porta traseira";      
   
-    } else if ( activePIR() ) {
-      action = true;
-      sensor = "Presença Infravermelho";
-      local = "Ferramentas";
+  String sensor = "";
+  String local = "";
 
-    }
-    
-    else {
+  if ( checkMagnetic() ) {
+    action = true;
+    sensor = "Magnetico";
+    local = "Porta traseira";      
+  
+  } else if ( activePIR() ) {
+    action = true;
+    sensor = "Presença Infravermelho";
+    local = "Ferramentas";
+
+  } else {      
+    action = false;
       
-      action = false;
-    } 
+  } 
+
+  // TODO: ref para alarme ativo
+  Serial.print(".");
 
 
-    Serial.print(".");
-
-  //Desabilita relé após o tempo definido em triggerTime;
-	if ( currentMillis != 0 && (millis() - currentMillis >= triggerTime) ) {
+  // @millis()
+  //Desabilita relé após o tempo definido em @triggerTime;
+	if ( currentMillisTrigger != 0 && (millis() - currentMillisTrigger >= triggerTime) ) {
 
     // TODO: Remover
+    Serial.println();
     Serial.print("MILLIS: ");
-    Serial.println(currentMillis);
+    Serial.println(currentMillisTrigger);
 
     // Atualiza o tempo atual caso algum sensor estiver acionado;
     if ( action == true ) {
-      currentMillis = millis(); 
+      currentMillisTrigger = millis(); 
       
     } else {
       Serial.println("Desabilitando relé..."); 
@@ -279,32 +297,36 @@ void checkStatusModules() {
 		  triggerRelay(false);
 		
 		  // Retorna ao valor incial para uso posterior, atendendo a linha 186;
-		  currentMillis = 0;
+		  currentMillisTrigger = 0;
     
       delay(1);
     }
-
 	}
-	
-	
+
 
 
     // Shoot from action = true;
-    if ( action == true ) {	
-
-  		if ( currentMillis == 0 ) {
-  			currentMillis = millis();
-  		}
+  if ( action == true ) {
+    currentMillisTrigger = millis();
 
       // Shoot functions trigger;
-      shoot(sensor, local);
+    shoot(sensor, local);
+  }
 
 
-    }
+
+    // @millis()
+    //Atualiza tempo do alarme ativo @uptimeOn
+  if ( millis() > (currentMillisOn + uptimeOn) ) {    
+    currentMillisOn = millis();
+    postUptimeOn(currentMillisOn);
+    
+  }
+
 }
 
 
-
+  // Função acionada caso o alarme seja disparado;
 void shoot(String sensor, String local) {
 
   // liga LED da placa
@@ -319,17 +341,18 @@ void shoot(String sensor, String local) {
   triggerRelay(1);
 
 
-// TODO: Serial print
-Serial.print("DISPAROU action=true");
-Serial.print(" - Sensor: "); Serial.print(sensor);
-Serial.print(" - Info: "); Serial.print(local);
+  // TODO: Serial print
+  Serial.print("DISPAROU action=true");
+  Serial.print(" - Sensor: "); Serial.print(sensor);
+  Serial.print(" - Info: "); Serial.print(local);
 
 
   //post data to realtime database
   postData(local);
-/*
-  // post data in google sheet
-  postForm(sensor, local);
-*/
+
+  /*
+    // post data in google sheet
+    postForm(sensor, local);
+  */
 }
 
