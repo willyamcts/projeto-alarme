@@ -13,17 +13,44 @@
 
 FirebaseData firebaseData;
 
+<<<<<<< HEAD
+=======
+const String path = "/state/laT1udjSw8VORuaYuW15/";
+const String fieldState = "on";
+const String fieldLastTime = "lastChange";
+const String fieldLastLocale = "lastLocale";
+const String fieldUptime = "/uptime";
+const String fieldUptimeOn = "/uptimeOn";
+
+
+/*
+ * Definitions functions
+ */
+>>>>>>> dev
 bool postTime(String path, String field);
 
 bool postLocale(String path, String field, String locale);
 
+<<<<<<< HEAD
+=======
+void postUptime();
+void postUptimeOn();
+
+/*
+ * 
+ */
+
+>>>>>>> dev
 
 void initFirebase(String firebaseHost, String firebaseAuth) {
   Firebase.begin(firebaseHost, firebaseAuth);
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
 bool checkDBAlarm(String path, String field) {
 
   // TODO: Descomentar após testes iniciais
@@ -43,6 +70,7 @@ bool checkDBAlarm(String path, String field) {
 }
 
 
+<<<<<<< HEAD
 void postData(String path, String field, String locale) {
 
   // TODO: Descomentar após testes iniciais
@@ -53,11 +81,21 @@ void postData(String path, String field, String locale) {
 
   } else {
     
+=======
+void postData(String locale) {
+
+  // TODO: Descomentar após testes iniciais
+  //if (Firebase.setTimestamp(firebaseData, path + field) {
+  if ( postTime(path, fieldLastTime) && postLocale(path, fieldLastLocale, locale) ) {
+    
+  } else {
+>>>>>>> dev
     Serial.print("3RROR: ");  
   }
 }
 
 
+<<<<<<< HEAD
 bool postTime(String path, String field) {
   //if (Firebase.setTimestamp(firebaseData, path + field) {
   Firebase.setTimestamp(firebaseData, "/state/laT1udjSw8VORuaYuW15/lastChange");
@@ -66,9 +104,43 @@ bool postTime(String path, String field) {
 bool postLocale(String path, String field, String locale) {
   //if (Firebase.setString(firebaseData, path + field) {
     Firebase.setString(firebaseData, "/lastLocale", locale);
+=======
+
+bool postTime(String path, String fieldTimestamp) {
+  
+  if ( Firebase.setTimestamp(firebaseData, path + fieldTimestamp) ) {
+    return true;
+  }
+}
+
+
+bool postLocale(String path, String fieldLocale, String locale) {
+
+  if (Firebase.setString(firebaseData, path + fieldLocale, locale) ) {
+    return true;
+  }
+}
+
+
+// @require campo "Uptime" e tempo;
+void postUptime() {
+
+    if ( Firebase.setFloat(firebaseData, fieldUptime, millis()) ) {
+      //return true;
+    }
+>>>>>>> dev
 }
 
 
 
+<<<<<<< HEAD
 
+=======
+void postUptimeOn(unsigned long timeOn) {
+
+  if ( Firebase.setFloat(firebaseData, fieldUptimeOn, timeOn) ) {
+    //return true;
+  }  
+}
+>>>>>>> dev
 

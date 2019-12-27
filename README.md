@@ -15,7 +15,11 @@ Posteriormente, talvez seja desenvolvido um app para Android para habilitar/desa
 
 Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
 
+<<<<<<< HEAD
  * NodeCU ESP8266
+=======
+ * NodeMCU ESP8266
+>>>>>>> dev
  * <s>Buzzer</s>
  * Módulo magnético
  * PIR - Sensor de presença Infrevermelho
