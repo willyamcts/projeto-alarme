@@ -50,9 +50,11 @@
 #define WIFI_PASSWORD "R041215W"
 */
 
-
 #define WIFI_SSID "Rede"
 #define WIFI_PASSWORD "afgm6033"
+
+
+
 
 
 // Armazena estado do alarme (on/off);
@@ -82,6 +84,7 @@ unsigned long uptimeOn = 60000 * 1;
 // Armazena o tempo em que está habilitado;
 unsigned long currentMillisOn = 0;
 
+unsigned long discountMillisOn = 0;
 
 
 // --------------------- Setup ---------------------
@@ -130,6 +133,7 @@ void setup() {
 
   initServer(0);
 */
+
   ledConnectingWifi(true);
   connectWifi(WIFI_SSID, WIFI_PASSWORD);
   // Reconnect AP case is it disconnected;
@@ -158,7 +162,6 @@ bool temp;
 void loop() {
   //digitalWrite(LED_BOARD, HIGH);
 
-
   // Check db in interval defined;
   if ( millis() > (checkDBMillis + timeCheck) ) {
     checkDBMillis = millis();
@@ -176,12 +179,15 @@ void loop() {
         
       }
 
-/*
-          // set time On 
-          currentMillisOn = 0;
-          postUptimeOn(currentMillisOn);
-*/
 
+      if (alarmOn) {
+        discountMillisOn = millis();
+      } else {
+        // set time On 
+        currentMillisOn = 0;
+        postUptimeOn(currentMillisOn);
+        
+      }
     }
 
     //TODO: funcao correta comentada;
@@ -218,7 +224,16 @@ void loop() {
 
   // Veriifca os retornos dos módulos se o alarme estiver ativo (= 1);
   if ( alarmOn ) {
+    
     checkStatusModules();
+
+      // @millis()
+      //Atualiza tempo do alarme ativo @uptimeOn
+    if ( millis() > ((currentMillisOn+discountMillisOn) + uptimeOn) ) {    
+      currentMillisOn = millis() - discountMillisOn;
+      postUptimeOn(currentMillisOn);
+      
+    }    
   }
 
   digitalWrite(LED_BOARD, !HIGH);
@@ -269,9 +284,8 @@ void checkStatusModules() {
     local = "Ferramentas";
 
   } else {      
-    action = false;
-      
-  } 
+    action = false;      
+  }
 
   // TODO: ref para alarme ativo
   Serial.print(".");
@@ -280,11 +294,8 @@ void checkStatusModules() {
   // @millis()
   //Desabilita relé após o tempo definido em @triggerTime;
 	if ( currentMillisTrigger != 0 && (millis() - currentMillisTrigger >= triggerTime) ) {
-
     // TODO: Remover
-    Serial.println();
-    Serial.print("MILLIS: ");
-    Serial.println(currentMillisTrigger);
+    Serial.println(); Serial.print("MILLIS: "); Serial.println(currentMillisTrigger);
 
     // Atualiza o tempo atual caso algum sensor estiver acionado;
     if ( action == true ) {
@@ -303,8 +314,6 @@ void checkStatusModules() {
     }
 	}
 
-
-
     // Shoot from action = true;
   if ( action == true ) {
     currentMillisTrigger = millis();
@@ -313,17 +322,8 @@ void checkStatusModules() {
     shoot(sensor, local);
   }
 
-
-
-    // @millis()
-    //Atualiza tempo do alarme ativo @uptimeOn
-  if ( millis() > (currentMillisOn + uptimeOn) ) {    
-    currentMillisOn = millis();
-    postUptimeOn(currentMillisOn);
-    
-  }
-
 }
+
 
 
   // Função acionada caso o alarme seja disparado;
