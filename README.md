@@ -6,20 +6,15 @@ Nesse projeto a intenção é criar um alarme utilizando uma placa Arduino e alg
 
 A ideia é incrementando os módulos conforme o passar do tempo, evoluindo a integração dos módulos e posteriormente a melhoria no código.
 
-O objetivo final é obter um alarme completo, utilizando sensores de movimento, abertura de portas, ativação e desativação remota, fazendo uso do módulo GSM para emitir avisos via SMS.
+O objetivo final é obter um alarme completo, utilizando sensores de movimento, abertura de portas, ativação e desativação remota, fazendo uso do módulo GSM para emitir avisos via SMS e via app que será usado para gerenciamento.
 
-Posteriormente, talvez seja desenvolvido um app para Android para habilitar/desabilitar o alarme, testar os módulos - se estão funcionando corretamente - para não haver custos (com ligação ou SMS no GSM), utilizando módulo Ethernet.
 
 
 ## Componentes
 
 Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
 
-<<<<<<< HEAD
- * NodeCU ESP8266
-=======
  * NodeMCU ESP8266
->>>>>>> dev
  * <s>Buzzer</s>
  * Módulo magnético
  * PIR - Sensor de presença Infrevermelho
