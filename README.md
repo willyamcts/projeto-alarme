@@ -26,4 +26,6 @@ Os seguinte módulos e componentes são necessários para a montagem completa do
 ## Estado atual:
 [...]
 
+Alarme iniciando com a conexão ao wi-fi, indicado pelo LED lilás intermitente. Na sequência é realizado a consulta no banco de dados sobre o estado do alarme (ativo/inativo), que é indicado pelo LED verde para ativo e vermelho para inativo. Cada consulta ao db sobre o estado do alarme o LED fica intermitente.
+
 Os módulos dispostos no esquema "coming" são para implementação futura, se necessário.
