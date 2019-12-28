@@ -57,14 +57,14 @@
 
 
 
-// Armazena estado do alarme (on/off);
+// Store alarm real status (on/off);
 bool alarmOn;
 
-// Armazena o estado dos sensores;
+// Sensors status store;
 bool action = false;
 
+// Store alarm status temporarily;
 bool alarmOnTemp;
-
 
 // Intervalor de tempo para consultar o estado do alarme
 const int timeCheck = 1000 * 15; // = 15 segundos
@@ -85,6 +85,9 @@ unsigned long uptimeOn = 60000 * 1;
 unsigned long currentMillisOn = 0;
 
 unsigned long discountMillisOn = 0;
+
+
+
 
 
 // --------------------- Setup ---------------------
@@ -143,6 +146,11 @@ void setup() {
   
   initFirebase(FIREBASE_HOST, FIREBASE_AUTH);
 
+  // post initial value @uptime = 0
+  postUptime();
+  // post initial value @uptimeOn = 0
+  postUptimeOn(0);
+
   alarmOn = checkDBAlarm("", "");
   alarmOnTemp = alarmOn;
 
@@ -150,11 +158,10 @@ void setup() {
   
 }
 
-
-
-
-
 unsigned long checkDBMillis = millis();
+
+
+
 
 
 void loop() {
@@ -167,8 +174,10 @@ void loop() {
     alarmOnTemp = checkDBAlarm("", "");
 
     postUptime();
-      
-    if ( alarmOnTemp != alarmOn ) {
+
+    // change var @alarmOn case changed in db
+    if ( (alarmOnTemp == 0 || alarmOnTemp == 1) && alarmOnTemp != alarmOn ) {
+
       alarmOn = alarmOnTemp;
   
       // desable relay case alarm change to off
@@ -177,6 +186,8 @@ void loop() {
         
       }
 
+// TODO:
+Serial.print("ALARMON = "); Serial.println(alarmOn);
 
       if (alarmOn) {
         discountMillisOn = millis();
