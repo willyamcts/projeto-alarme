@@ -9,8 +9,8 @@
  * Components: 
  *  - NodeMCU ESP8266 12
  *  - LED RGB
- *  - Presence Infra Red module
- *	- Magnético
+ *  - Sensor de presença infravermelho
+ *	- Sensor magnético p/ portas e janelas
  *  - Relé 5v
  */
 
@@ -59,12 +59,11 @@
 
 // Store alarm real status (on/off);
 bool alarmOn;
+// Store alarm status temporarily;
+bool alarmOnTemp;
 
 // Sensors status store;
 bool action = false;
-
-// Store alarm status temporarily;
-bool alarmOnTemp;
 
 // Intervalor de tempo para consultar o estado do alarme
 const int timeCheck = 1000 * 15; // = 15 segundos
@@ -73,17 +72,18 @@ const int timeCheck = 1000 * 15; // = 15 segundos
 // Armazena hora do disparo (millis);
 unsigned long currentMillisTrigger = 0; // 0
 // "tempo de acionamento" do relé, em ms;
-//	Conf: Altera somente o último número, mantém o [60.000]
-//      Em minutos
+//	Conf: Altera somente o último número (minutos),
+//    mantém o [60000]
 const long triggerTime = 15000; //60000 * 2;
 
 
 // intervalo de tempo para atualizar o tempo que o alarme está habilitado;
-//  Conf: Altera somente o último número, mantém o [60.000]
+//  Conf: Altera somente o último número, mantém o [60000]
 unsigned long uptimeOn = 60000 * 1;
 // Armazena o tempo em que está habilitado;
 unsigned long currentMillisOn = 0;
-
+// Armazena o tempo decorrido até ativação do alarme, para ser descontado de 
+//    @currentMillisOn
 unsigned long discountMillisOn = 0;
 
 
@@ -129,14 +129,6 @@ void setup() {
   mfrc522.PCD_Init();   // Inicia MFRC522
 */
 
-/*
-  // Start Ethernet W5500
-  Ethernet.begin(mac, ip);
-  server.begin(); //
-
-  initServer(0);
-*/
-
   ledConnectingWifi(true);
   connectWifi(WIFI_SSID, WIFI_PASSWORD);
   // Reconnect AP case is it disconnected;
@@ -177,6 +169,10 @@ void loop() {
 
     // change var @alarmOn case changed in db
     if ( (alarmOnTemp == 0 || alarmOnTemp == 1) && alarmOnTemp != alarmOn ) {
+
+// TODO: Entrando na função eventualmente mesmo com alarmOn == alarmOnTemp
+Serial.print("alarmOnTemp = "); Serial.print(alarmOnTemp); Serial.print(", "); Serial.print(sizeof(alarmOnTemp)); Serial.print(" - "); 
+Serial.print("alarmOn = "); Serial.print(alarmOn); Serial.print(", "); Serial.println(sizeof(alarmOn));
 
       alarmOn = alarmOnTemp;
   
@@ -359,9 +355,5 @@ void shoot(String sensor, String local) {
   //post data to realtime database
   postData(local);
 
-  /*
-    // post data in google sheet
-    postForm(sensor, local);
-  */
 }
 
