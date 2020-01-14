@@ -10,6 +10,8 @@
 # define LED_GREEN D5
 # define LED_BLUE D6
 
+
+# define DHTPIN A0
 /*
  * Pin RFID
  */

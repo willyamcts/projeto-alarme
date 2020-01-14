@@ -23,6 +23,7 @@
 //# include "buzzer.h"
 # include "led.h"
 //# include "rfid.h"
+//# include "humidity_temperature-sensor.h"
 
 
 
@@ -34,11 +35,11 @@
 #define FIREBASE_AUTH "16vw..."
 
 
-/*
+
 // Set data connection wireless;
 #define WIFI_SSID "VIVO-29A9"
 #define WIFI_PASSWORD "C9D3BD29A9"
-*/
+
 
 /*
 ***REMOVED***
@@ -50,9 +51,10 @@
 #define WIFI_PASSWORD "R041215W"
 */
 
+/*
 #define WIFI_SSID "Rede"
 #define WIFI_PASSWORD "afgm6033"
-
+*/
 
 
 
@@ -108,6 +110,12 @@ void setup() {
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_BLUE, OUTPUT);
 
+/*  
+ *   // DHT
+  pinMode(A0, INPUT_PULLUP);
+delayMicroseconds(100);
+*/
+
 /*
   pinMode(blue, OUTPUT);
   pinMode(green, OUTPUT);
@@ -137,17 +145,26 @@ void setup() {
 
   
   initFirebase(FIREBASE_HOST, FIREBASE_AUTH);
+// TODO; NEW Firebase.Stream
+//dbStream();
+
+  delay(1000);
+  // post hour and date from boot
+  bootTime();
 
   // post initial value @uptime = 0
   postUptime();
   // post initial value @uptimeOn = 0
   postUptimeOn(0);
 
-  alarmOn = checkDBAlarm("", "");
+  alarmOn = checkDBAlarm();
   alarmOnTemp = alarmOn;
 
   Serial.print("AlarmOn inicial: "); Serial.println(alarmOn);
-  
+
+  // DHT
+  //initDHT();
+    
 }
 
 unsigned long checkDBMillis = millis();
@@ -163,7 +180,14 @@ void loop() {
   if ( millis() > (checkDBMillis + timeCheck) ) {
     checkDBMillis = millis();
 
-    alarmOnTemp = checkDBAlarm("", "");
+/*
+// TODO: NEW
+    if ( Firebase.available() ) {
+      Serial.print("NOVA CONSULTA: "); Serial.println(checkDBAlarm("", ""));
+    }
+*/
+    
+    alarmOnTemp = checkDBAlarm();
 
     postUptime();
 
@@ -193,11 +217,17 @@ Serial.print("ALARMON = "); Serial.println(alarmOn);
         postUptimeOn(currentMillisOn);
         
       }
+      
     }
 
     //TODO: funcao correta comentada;
     //ledConsultingDB(alarmOn);
     ledIndicateStateAlarm(alarmOn);
+
+    
+
+  /// TODO: Teste DHT
+  //readDHT();
   }
   
   //delay(250);
