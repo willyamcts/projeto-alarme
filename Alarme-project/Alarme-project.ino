@@ -32,14 +32,17 @@
 
 // Set data Firebase;
 #define FIREBASE_HOST "...firebaseio.com"
-#define FIREBASE_AUTH "16vw..."
+#define FIREBASE_AUTH "16v..."
 
 
+***REMOVED***
+***REMOVED***
 
+/*
 // Set data connection wireless;
 #define WIFI_SSID "VIVO-29A9"
 #define WIFI_PASSWORD "C9D3BD29A9"
-
+*/
 
 /*
 ***REMOVED***
@@ -377,6 +380,7 @@ void shoot(String sensor, String local) {
 
 
   // TODO: Serial print
+  Serial.println();
   Serial.print("DISPAROU action=true");
   Serial.print(" - Sensor: "); Serial.print(sensor);
   Serial.print(" - Info: "); Serial.print(local);
