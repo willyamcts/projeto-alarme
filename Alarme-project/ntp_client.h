@@ -1,3 +1,9 @@
+/*
+ * Sources:
+ *  https://lastminuteengineers.com/esp8266-ntp-server-date-time-tutorial/
+ *  https://randomnerdtutorials.com/esp32-ntp-client-date-time-arduino-ide/
+ */
+
 # include <NTPClient.h>
 # include <WiFiUdp.h>
 
