@@ -1,26 +1,32 @@
 # Alarm Project
 
-A contratação de um sistema de segurança para empresas ou domicílios eventualmente se tornam caras e nem sempre vantajosas por N motivos, como por exemplo, na aquisição de um kit alarme, a central já vem programada para trabalhar com determinados módulos, ou seja, limita os recursos que queremos utilizar.
+A contratação de um sistema de segurança para empresas ou domicílios atualmente se tornam caras e nem sempre vantajosas por n motivos, como por exemplo em uma compra de kit de alarme, a central já vem programada para trabalhar com determinados módulos, ou seja, acaba nos limitando quanto aos recursos que queremos utilizar. 
 
-Nesse projeto a intenção é criar um alarme utilizando uma placa Arduino e alguns módulos.
+## Objetivo
+Criar um alarme utilizando uma placa de prototipagem e alguns módulos. A ideia é incrementando os módulos conforme o passar do tempo, evoluindo a integração dos módulos e posteriormente a melhoria no código. 
 
-A ideia é incrementando os módulos conforme o passar do tempo, evoluindo a integração dos módulos e posteriormente a melhoria no código.
+O objetivo final é obter um alarme completo, integrando módulos GSM para emitir avisos via SMS.
 
-O objetivo final é obter um alarme completo, utilizando sensores de movimento, abertura de portas, ativação e desativação remota, fazendo uso do módulo GSM para emitir avisos via SMS e via app que será usado para gerenciamento.
+### Incremento
+Posteriormente a criação de um app Android para habilitar/desabilitar o alarme, testar os módulos - se estão funcionando corretamente - para não haver custos (com ligação ou SMS no GSM), utilizando módulo Ethernet ou Wi-fi.
 
 
 
-## Componentes
+## O Projeto
 
-Os seguinte módulos e componentes são necessários para a montagem completa do alarme:
+Abaixo está o esquema de ligação dos módulos, bem como a lista dos itens necessários para construção do alarme. **O esquema e os itens serão atualizados no decorrer do desenvolvimento**
 
  * NodeMCU ESP8266
- * <s>Buzzer</s>
- * Módulo magnético
- * PIR - Sensor de presença Infrevermelho
- * Relê
- * <s> GSM SIM800L + Regulador de tensão
- * RFID </s>
+ * 1x Mód. Sensor Magnético de sobrepor
+ * 2x Mód. PIR (Sensor de Presença Infrevermelho)
+ * 1x Relé 12v (**JQC-3FF**)
+ * <s> 1x Mód. GSM (**SIM800L**) + Regulador de tensão (**LM2596**) </s>
+ * <s> 1x Mód. RFID (**MFRC522**) + Buzzer </s>
+ 
+
+
+![Esquema](https://raw.githubusercontent.com/willyamcts/projeto-alarme/master/Projeto%20Alarme%20-%20Esquema%20ESP8266_comming_bb.png)
+ 
 
 
 ## Estado atual:
