@@ -1,159 +1,109 @@
-#include <FirebaseESP8266.h>
-#include <jsmn.h>
+#include <Firebase_ESP_Client.h>
+//#include <jsmn.h>
+#include <addons/TokenHelper.h>
 
-#include "ntp_client.h"
-
-
-
-
-// Define values in main class
-//#define FIREBASE_HOST "a...firebaseio.com"
-//#define FIREBASE_AUTH "16vw..."
-
-
+FirebaseAuth auth;
+FirebaseConfig config;
 FirebaseData firebaseData;
 
-const String path = "/laT1udjSw8VORuaYuW15-Mec_Castro/";
-const String fieldState = "state/on"; // should create field manually in db
-//const String fieldLastTime = "state/lastChange";
-//const String fieldLastLocale = "state/lastLocale";
-const String fieldBootTime = "/bootHour";
-const String fieldUptime = "/uptime";
-const String fieldUptimeOn = "state/uptimeOn";
+struct rtdb_structure {
+  String root;
+  const char* bootTime = "/bootTime";
+  const char* state = "/state/on";
+  const char* uptimeOn = "/state/uptimeOn";
+  const char* shotsRecords = "/history/shots/";
+};
 
-// fields registry trigger alarm
-const String registry = "history/";
-const String indexes = registry + "index";  // should create field manually in db, start value = 1
-byte indexHistory;
-
-const String fieldsLocale = registry + "locale";
-const String fieldsTime = registry + "time";
-
-
+rtdb_structure DB;
 
 
 /*
    Definitions functions
 */
-bool postTimestamp(String path, String field);
-
-bool postLocale(String path, String field, String locale);
-
-void postUptime();
-void postUptimeOn();
-
+void setDefaultValuesRTDB();
+void postTimestamp(String field);
+bool postLocale(String field, String locale);
 
 
 /*
-   Init Firebase
-*/
+ * Init Firebase
+ */
+void initFirebase(String firebaseHost, String firebaseKey, String firebaseUser, String firebaseUserPass) {
+  config.host = firebaseHost;
+  config.database_url = firebaseHost;
+  config.api_key = firebaseKey;
+  auth.user.email = firebaseUser;
+  auth.user.password = firebaseUserPass;
 
-void initFirebase(String firebaseHost, String firebaseAuth) {
-  Firebase.begin(firebaseHost, firebaseAuth);
-  //initNTP();
+  config.token_status_callback = tokenStatusCallback;
+  firebaseData.setBSSLBufferSize(4096 /* Rx buffer size in bytes from 512 - 16384 */, 1024 /* Tx buffer size in bytes from 512 - 16384 */);
+
+  Serial.printf("::initFirebase()::Firebase.begin() -> ");
+  Firebase.begin(&config, &auth);
+
+  if ( Firebase.ready() ) {
+    DB.root = String((auth.token.uid).c_str()); // MB_String object type
+    delay(10);
+    Serial.printf("::initFirebase():::Firebase.ready() -> authenticated as %s = %s\n", firebaseUser.c_str(), DB.root.c_str());
+  } else {
+    Serial.printf("::initFirebase():::Firebase.ready() -> not authenticated, returned: %s\n", firebaseData.errorReason().c_str());
+  }
+
+  setDefaultValuesRTDB();
+}
+
+// Set default values for data in RTDB
+void setDefaultValuesRTDB() {
+  Firebase.RTDB.setInt(&firebaseData, DB.root + DB.uptimeOn, 0);
 }
 
 
-
 /*
-   Other functions
-*/
+ * Other functions
+ */
+void postBootTime() {
+  postTimestamp(DB.bootTime);
+}
+
+void postUptimeOn() {
+  postTimestamp(DB.uptimeOn);
+}
 
 
-bool checkDBAlarm() {
-
-  if (Firebase.getInt(firebaseData, path + fieldState) ) {
-    if  (firebaseData.dataType() == "int") {
-      bool val = firebaseData.intData();
-
-      Serial.println();
-      Serial.print("Alarme foi: "); Serial.println(val);
-
-      return val;
+bool checkState() {
+  bool value = 0;
+  if ( Firebase.RTDB.getInt(&firebaseData, (DB.root + DB.state).c_str()) ) {
+    if (firebaseData.dataType() == "int") {
+      value = firebaseData.intData();
+      Serial.printf("::checkState() -> Alarm state = %d\n", value);
     }
   } else {
-    return -1;
+    Serial.printf("::checkState()::Firebase.RTDB.getInt(%s) error: %s", String(DB.root + DB.state).c_str(), firebaseData.errorReason().c_str());
   }
+  return value;
 }
 
+void postData(char* locale) {
+  Serial.printf("::Firebase.Timestamp = %d", firebaseData.to<int>());
 
-
-void bootTime() {
-  postTimestamp(path, fieldBootTime);
+  // TODO: https://github.com/mobizt/Firebase-ESP-Client?tab=readme-ov-file#store-data
+  //if ( ! (postTimestamp(DB.root, DB.shotsRecords) && postLocale(DB.root, DB.shotsRecords + firebaseData.to<int>() + "/locale/", locale)) ) {
+  postLocale(DB.shotsRecords + String(firebaseData.to<int>()) + "/locale/", locale);
 }
 
-
-
-void postData(String locale) {
-
-  if ( indexHistory == 0 ) {
-    // Get index to registry history triggers;
-    if (Firebase.getInt(firebaseData, path + indexes) ) {
-
-      if  (firebaseData.dataType() == "int") {
-        indexHistory = firebaseData.intData();
-        Serial.print("Index do histórico: "); Serial.println(indexHistory);
-      }
-
-    }
-
-    if ( indexHistory == 0 ) {
-      indexHistory ++;
-    }
-    
+void postTimestamp(String fieldTimestamp) {
+  if ( Firebase.RTDB.setTimestamp(&firebaseData, DB.root + fieldTimestamp) ) {
+    Serial.printf("::postTimestamp()::Firebase.RTDB.setTimestamp(%s)", fieldTimestamp.c_str());
   } else {
-    
-    indexHistory++;
-    Firebase.setInt(firebaseData, path + indexes, indexHistory);
-    Serial.print("Index incrementadoo.... "); Serial.println(indexHistory);
-  }
-
-  delay(100);
-
-  if ( ! (postTimestamp(path, fieldsTime + indexHistory) && postLocale(path, fieldsLocale + indexHistory, locale)) ) {
-    Serial.print("3RROR: ");
-  }
-  
-/*
-  if ( ! (postTimestamp(path, fieldLastTime) && postLocale(path, fieldLastLocale, locale)) ) {
-    Serial.print("3RROR: ");
-  }
-*/
-
-}
-
-
-
-bool postTimestamp(String path, String fieldTimestamp) {
-
-  if ( Firebase.setTimestamp(firebaseData, path + fieldTimestamp) ) {
-    return true;
+    Serial.printf("::postTimestamp()::Firebase.RTDB.setTimestamp in %s. error: %s", fieldTimestamp.c_str(), firebaseData.errorReason().c_str());
   }
 }
 
-
-bool postLocale(String path, String fieldLocale, String locale) {
-
-  if (Firebase.setString(firebaseData, path + fieldLocale, locale) ) {
-    return true;
+bool postLocale(char* fieldLocale, char* locale) {
+  bool value = true;
+  if ( ! Firebase.RTDB.setString(&firebaseData, DB.root + fieldLocale, locale) ) {
+    value = false;
+    Serial.printf("POST fail %s: %s", DB.root + fieldLocale, firebaseData.errorReason().c_str());
   }
+  return value;
 }
-
-
-// @require campo "Uptime" e millis();
-void postUptime() {
-
-  if ( Firebase.setFloat(firebaseData, path + fieldUptime, millis()) ) {
-    //return true;
-  }
-}
-
-
-
-void postUptimeOn(unsigned long timeOn) {
-
-  if ( Firebase.setFloat(firebaseData, path + fieldUptimeOn, timeOn) ) {
-    //return true;
-  }
-}
-
