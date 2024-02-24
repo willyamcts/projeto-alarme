@@ -21,7 +21,7 @@ void low() {
   digitalWrite(LED_RED, LOW);
 }
 
-void defaul() {
+void standard() {
   digitalWrite(LED_BLUE, HIGH);
   digitalWrite(LED_GREEN, HIGH);
   digitalWrite(LED_RED, HIGH);
@@ -74,9 +74,9 @@ void ledConnectingWifi(bool start) {
       lilac(); delay(200);
     }
   } else {
-    defaul(); delay(150);
+    standard(); delay(150);
     lilac(); delay(150);
-    defaul();
+    standard();
   }  
 }
 
@@ -119,7 +119,7 @@ void ledIndicateStateAlarm(int alarmState) {
   } else {
     ledDesable();
     ledEnable();
-    defaul();
+    standard();
   }
 }
 
