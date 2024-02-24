@@ -1,6 +1,4 @@
-
 #include <ESP8266WiFi.h>
-
 
 void connectWifi(String wifiSSID, String wifiPassword) {
   // Let us connect to WiFi
@@ -11,8 +9,8 @@ void connectWifi(String wifiSSID, String wifiPassword) {
     delay(500);
     Serial.print(".");
   }
+  Serial.println("Connected in \"" + WiFi.SSID() + "\" with IP Address: " + WiFi.localIP().toString() + " - DNS: " + WiFi.dnsIP(0).toString());
   
-  Serial.print("Connected in " + wifiSSID + ". IP Address: ");
-  Serial.println(WiFi.localIP());
-
+  // Reconnect AP case is it disconnected;
+  WiFi.setAutoReconnect(true);
 }
