@@ -1,7 +1,5 @@
 # Alarm Project
 
-A contratação de um sistema de segurança para empresas ou domicílios atualmente se tornam caras e nem sempre vantajosas por n motivos, como por exemplo em uma compra de kit de alarme, a central já vem programada para trabalhar com determinados módulos, ou seja, acaba nos limitando quanto aos recursos que queremos utilizar. 
-
 ## Objetivo
 Criar um alarme utilizando uma placa de prototipagem e alguns módulos. A ideia é incrementando os módulos conforme o passar do tempo, evoluindo a integração dos módulos e posteriormente a melhoria no código. 
 
@@ -18,20 +16,27 @@ Abaixo está o esquema de ligação dos módulos, bem como a lista dos itens nec
 
  * NodeMCU ESP8266
  * 1x Mód. Sensor Magnético de sobrepor
- * 2x Mód. PIR (Sensor de Presença Infrevermelho)
+ * 2x Mód. PIR (Sensor de Presença Infravermelho)
  * 1x Relé 12v (**JQC-3FF**)
- * <s> 1x Mód. GSM (**SIM800L**) + Regulador de tensão (**LM2596**) </s>
+ * <s> 1x Mód. RFID RC-522 </s>
  * <s> 1x Mód. RFID (**MFRC522**) + Buzzer </s>
+ * <s> 1x Mód. GSM (**SIM800L**) + Regulador de tensão (**LM2596**) </s>
  
 
 
 ![Esquema](https://raw.githubusercontent.com/willyamcts/projeto-alarme/master/Projeto%20Alarme%20-%20Esquema%20ESP8266_comming_bb.png)
- 
+
+
+* Os módulos dispostos no esquema "coming" são para implementação futura, se necessário.
 
 
 ## Estado atual:
 [...]
 
-Alarme iniciando com a conexão ao wi-fi, indicado pelo LED lilás intermitente. Na sequência é realizado a consulta no banco de dados sobre o estado do alarme (ativo/inativo), que é indicado pelo LED verde para ativo e vermelho para inativo. Cada consulta ao db sobre o estado do alarme o LED fica intermitente.
 
-Os módulos dispostos no esquema "coming" são para implementação futura, se necessário.
+
+
+Bibliotecas:
+ - MFRC522 v
+ - [ESP8266WiFi](https://arduino-esp8266.readthedocs.io/en/latest/esp8266wifi/readme.html) (release april/2021)
+ - [Firebase_ESP_Client v4.4.x](https://github.com/mobizt/Firebase-ESP-Client)
