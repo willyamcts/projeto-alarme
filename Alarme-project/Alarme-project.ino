@@ -7,11 +7,11 @@
  * 
  * 
  * Components: 
- *  - NodeMCU ESP8266 12
+ *  - NodeMCU ESP8266 12E
  *  - LED RGB
- *  - Sensor de presença infravermelho
- *	- Sensor magnético p/ portas e janelas
- *  - Relé 5v
+ *  - PIR Sensor
+ *	- Magnetic sensor for doors and windows
+ *  - Relay 5v
  */
 
 # include "pins.h"
@@ -29,36 +29,15 @@
 
 // --------------------- Definitions ---------------------
 
-
 // Set data Firebase;
-#define FIREBASE_HOST "...firebaseio.com"
-#define FIREBASE_AUTH "16v..."
+#define FIREBASE_HOST "<...>.firebaseio.com"
+#define FIREBASE_APIKEY "AIk8rlh1haUitYi2Pgd7o0q25p0FGARJd7qgANW"
+#define USER_EMAIL "<you account>"
+#define USER_PASSWD "<password account>"
 
-
-***REMOVED***
-***REMOVED***
-
-/*
 // Set data connection wireless;
-#define WIFI_SSID "VIVO-29A9"
-#define WIFI_PASSWORD "C9D3BD29A9"
-*/
-
-/*
-***REMOVED***
-***REMOVED***
-*/
-
-/*
-#define WIFI_SSID "VIVOFIBRA-D6D8"
-#define WIFI_PASSWORD "R041215W"
-*/
-
-/*
-#define WIFI_SSID "Rede"
-#define WIFI_PASSWORD "afgm6033"
-*/
-
+#define WIFI_SSID "<wifi name>"
+#define WIFI_PASSWORD "<wifi password>"
 
 
 
@@ -66,11 +45,10 @@
 bool alarmOn;
 // Store alarm status temporarily;
 bool alarmOnTemp;
-
 // Sensors status store;
 bool action = false;
 
-// Intervalor de tempo para consultar o estado do alarme
+// TODO: A remover:: Intervalor de tempo para consultar o estado do alarme
 const int timeCheck = 1000 * 15; // = 15 segundos
 
 
@@ -82,6 +60,7 @@ unsigned long currentMillisTrigger = 0; // 0
 const long triggerTime = 15000; //60000 * 2;
 
 
+// TODO: A remover:: bloco todo a remover até "unsigned long checkDBMillis = millis();"
 // intervalo de tempo para atualizar o tempo que o alarme está habilitado;
 //  Conf: Altera somente o último número, mantém o [60000]
 unsigned long uptimeOn = 60000 * 1;
@@ -91,14 +70,12 @@ unsigned long currentMillisOn = 0;
 //    @currentMillisOn
 unsigned long discountMillisOn = 0;
 
+unsigned long checkDBMillis = millis();
 
 
 
-
-// --------------------- Setup ---------------------
 void setup() {
-
-  Serial.begin(9600);
+  Serial.begin(115200);
   
   /*
    * Conf. pinos
@@ -113,18 +90,6 @@ void setup() {
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_BLUE, OUTPUT);
 
-/*  
- *   // DHT
-  pinMode(A0, INPUT_PULLUP);
-delayMicroseconds(100);
-*/
-
-/*
-  pinMode(blue, OUTPUT);
-  pinMode(green, OUTPUT);
-  pinMode(red, OUTPUT);
-*/
-
   /*
    * Define states
    */
@@ -132,7 +97,11 @@ delayMicroseconds(100);
   digitalWrite(RELAY, LOW);
 
 
-
+/*  
+  // DHT
+  pinMode(A0, INPUT_PULLUP);
+  delayMicroseconds(100);
+*/
 
 /*
   // Start RFID RC-522
@@ -142,43 +111,67 @@ delayMicroseconds(100);
 
   ledConnectingWifi(true);
   connectWifi(WIFI_SSID, WIFI_PASSWORD);
-  // Reconnect AP case is it disconnected;
-  WiFi.setAutoReconnect(true);
+
+// TODO: testar rede para trocar cor: "conectado", "sem internet"
   ledConnectingWifi(false);
+  // TODO: remover::: redundante ao da func wifi.h
+  //Serial.printf("Connected WIFI_SSID: %s", WiFi.localIP());
 
-  
-  initFirebase(FIREBASE_HOST, FIREBASE_AUTH);
-// TODO; NEW Firebase.Stream
+
+/*
+  1. inicializa connect RTDB
+  2. POST bootTime;
+  3. Consulta db para set state local
+  4. if state = on -> set(uptimeOn) que deve ser o timestamp -- o calculo do tempo deve ser feito no device final,
+     a cada view no device fazer uma request checando se realmente esta ativo antes de apresentar como ativo;
+  5. subscribe MQTT -> topic /state ou /state_$UID ou /$UID/state
+  -- print SerialMonitor valores coletado e atribuidos em RTDB
+  N+1. function loop();
+  *
+  *
+  *
+  *
+  */
+
+/*
+  initFirebase(FIREBASE_HOST, FIREBASE_APIKEY);
+// TODO: verificar para usar NEW Firebase.Stream
 //dbStream();
+*/
 
-  delay(1000);
-  // post hour and date from boot
-  bootTime();
+  // start firebase connection
+  initFirebase(FIREBASE_HOST, FIREBASE_APIKEY, USER_EMAIL, USER_PASSWD);
 
-  // post initial value @uptime = 0
-  postUptime();
-  // post initial value @uptimeOn = 0
-  postUptimeOn(0);
+  postBootTime(); // Timestamp
 
-  alarmOn = checkDBAlarm();
-  alarmOnTemp = alarmOn;
+  alarmOn = checkState();
+  if ( alarmOn ) {
+    postUptimeOn(); // Timestamp
+  }
 
-  Serial.print("AlarmOn inicial: "); Serial.println(alarmOn);
 
   // DHT
   //initDHT();
-    
 }
-
-unsigned long checkDBMillis = millis();
-
-
 
 
 
 void loop() {
   //digitalWrite(LED_BOARD, HIGH);
 
+  /*
+  1. MQTT loop() para receber alterações? modifica valores como state, uptimeOn in RTDB 
+     -- LED indicativo e uptimeOn deve ser alterado se state mudar
+  2. Salva dados pertinentes no RTDB
+  3. mantem "if ( alarmOn ) {": remover postUptimeOn
+  4. não alterar checkStatusModules() e shoot()
+  *
+  *
+  *
+  *
+  */
+
+  //TODO: a remover::: funcao inteira
   // Check db in interval defined;
   if ( millis() > (checkDBMillis + timeCheck) ) {
     checkDBMillis = millis();
@@ -190,9 +183,13 @@ void loop() {
     }
 */
     
-    alarmOnTemp = checkDBAlarm();
+    //alarmOnTemp = checkDBAlarm();
 
-    postUptime();
+    //postUptime();
+
+    // TODO: APAGAR / TESTE
+    alarmOn=0;
+    alarmOnTemp = 0;
 
     // change var @alarmOn case changed in db
     if ( (alarmOnTemp == 0 || alarmOnTemp == 1) && alarmOnTemp != alarmOn ) {
@@ -217,7 +214,7 @@ Serial.print("ALARMON = "); Serial.println(alarmOn);
       } else {
         // set time On 
         currentMillisOn = 0;
-        postUptimeOn(currentMillisOn);
+        //postUptimeOn(currentMillisOn);
         
       }
       
@@ -265,11 +262,13 @@ Serial.print("ALARMON = "); Serial.println(alarmOn);
     
     checkStatusModules();
 
+    // TODO: a remover::: ao inves disso fazer: se houver interação no app, faz um publish que solicita info ao ESP e o mesmo 
+    //    atualiza o RTDB com o uptimeOn como forma de validar que realmente está ativo
       // @millis()
       //Atualiza tempo do alarme ativo @uptimeOn
     if ( millis() > ((currentMillisOn+discountMillisOn) + uptimeOn) ) {    
       currentMillisOn = millis() - discountMillisOn;
-      postUptimeOn(currentMillisOn);
+      //postUptimeOn(currentMillisOn);
       
     }    
   }
@@ -311,6 +310,8 @@ void checkStatusModules() {
   String sensor = "";
   String local = "";
 
+  // TODO: definir arrays no inicio para alterar apenas o bloco inicial e nao precisar alterar esta função a cada alteração
+  //    de módulo
   if ( checkMagnetic() ) {
     action = true;
     sensor = "Magnetico";
@@ -378,16 +379,10 @@ void shoot(String sensor, String local) {
   
   triggerRelay(1);
 
-
-  // TODO: Serial print
-  Serial.println();
-  Serial.print("DISPAROU action=true");
-  Serial.print(" - Sensor: "); Serial.print(sensor);
-  Serial.print(" - Info: "); Serial.print(local);
-
+  // For debug
+  Serial.printf("Shooting...\n - Sensor: %s\n - Info: %s", sensor, local);
 
   //post data to realtime database
-  postData(local);
+  //postData(local);
 
 }
-
