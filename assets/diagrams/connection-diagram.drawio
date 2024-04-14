@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-17T16:23:32.176Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36" etag="PsTXwyoUMY5nYbeM3taJ" version="23.1.5" type="device" pages="2">
+<mxfile host="app.diagrams.net" modified="2024-04-14T14:17:25.046Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="zloVNH2BUx08LrHsLRYQ" version="24.2.2" type="device" pages="2">
   <diagram name="Página-1" id="4TNwL2eoXPIQ-F_cQECd">
-    <mxGraphModel dx="1261" dy="890" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="690" pageHeight="600" math="0" shadow="0">
+    <mxGraphModel dx="1804" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="690" pageHeight="600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -118,7 +118,7 @@
         <mxCell id="Wqh8fGnsDOdD3E51Sb5v-11" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://iot-labs.io/wp-content/uploads/2022/06/tago_color.png;" parent="1" vertex="1">
           <mxGeometry x="549.5500000000001" y="-220" width="134.91" height="37.55" as="geometry" />
         </mxCell>
-        <mxCell id="fdffv_27cCGZLNuf_p9K-1" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="fdffv_27cCGZLNuf_p9K-1" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="-110" y="-110" width="350" height="270" as="geometry" />
         </mxCell>
         <mxCell id="9oqAk7pQBYiyUqh1W1pA-2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" parent="fdffv_27cCGZLNuf_p9K-1" vertex="1">
@@ -136,7 +136,7 @@
             <mxPoint x="-160" y="30" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="fdffv_27cCGZLNuf_p9K-3" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="fdffv_27cCGZLNuf_p9K-3" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="1020" y="-110" width="250" height="270" as="geometry" />
         </mxCell>
         <mxCell id="9oqAk7pQBYiyUqh1W1pA-10" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;" parent="fdffv_27cCGZLNuf_p9K-3" vertex="1">
@@ -162,6 +162,9 @@
             <mxPoint x="-173.75" y="1" as="sourcePoint" />
             <mxPoint x="-491.75" y="230" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="CBgqDmmhOtlHz8vDGJKZ-1" value="&lt;b&gt;Legend:&lt;/b&gt;&lt;div&gt;&amp;nbsp; * In red: &lt;font color=&quot;#ec0909&quot;&gt;future implementation&lt;/font&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fillColor=none;fontColor=#333333;strokeColor=#666666;perimeterSpacing=5;spacing=10;opacity=40;" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="270" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
