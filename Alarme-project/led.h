@@ -8,7 +8,7 @@
  * - Procurando conexão wi-fi
  * - Consultou o db, valor do alarme ativo;
  * - Conectando Wi-fi*: Five blink Lilac;
- *    - Connected: Two little blink lilac. next color default;
+ *    - Connected: Two little blink lilac. next color standard;
  * - Alarme desabilitado*: Red;
  * - Alarme habilitado*: Green;
  * - Modo teste*: constant blink green;
