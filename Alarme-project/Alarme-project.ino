@@ -18,6 +18,7 @@
 # include "pins.h"
 # include "wifi.h"
 # include "firebase.h"
+# include "mqtt.h"
 # include "pir-sensor.h"
 # include "magnetic-sensor.h"
 # include "relay.h"
@@ -108,11 +109,10 @@ void setup() {
 
 
 /*
-  1. inicializa connect RTDB
-  2. POST bootTime;
-  3. Consulta db para set state local
-  4. if state = on -> set(uptimeOn) que deve ser o timestamp -- o calculo do tempo deve ser feito no device final,
-     a cada view no device fazer uma request checando se realmente esta ativo antes de apresentar como ativo;
+  1. inicializa connect RTDB - DONE
+  2. POST bootTime; - DONE
+  3. Consulta db para set state local - DONE
+  4. if state = on -> set(uptimeOn) que deve ser o timestamp - DONE
   5. subscribe MQTT -> topic /state ou /state_$UID ou /$UID/state
   -- print SerialMonitor valores coletado e atribuidos em RTDB
   N+1. function loop();
@@ -122,14 +122,10 @@ void setup() {
   *
   */
 
-/*
-  initFirebase(FIREBASE_HOST, FIREBASE_APIKEY);
-// TODO: verificar para usar NEW Firebase.Stream
-//dbStream();
-*/
-
   // start firebase connection
   initFirebase(FIREBASE_HOST, FIREBASE_APIKEY, USER_EMAIL, USER_PASSWD);
+  // start MQTT Broker connection
+  initMQTTConnection(MQTT_SERVER, MQTT_PORT, MQTT_USER, MQTT_PASSWORD);
 
   postBootTime(); // Timestamp
 
@@ -159,6 +155,11 @@ void loop() {
   *
   *
   */
+  
+//  publishMessage("teste"); delay(10000);
+  checkConnection(MQTT_USER, MQTT_PASSWORD);
+
+  clientMQTT.loop();
 
   //TODO: a remover::: funcao inteira
   // Check db in interval defined;
